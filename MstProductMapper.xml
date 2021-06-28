@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.co.internous.origami.model.mapper.MstProductMapper">
+
+<select id="findByProductName" resultType="jp.co.internous.origami.model.domain.MstProduct">
+
+	SELECT * FROM mst_product
+	<foreach item="searchWord" collection="searchWord" open="" close="" separator="" index="idx">
+			<choose>
+				<when test="idx == 0">
+					WHERE (product_name LIKE '%${searchWord}%')
+				</when>
+				<otherwise>
+					OR (product_name LIKE '%${searchWord}%')
+				</otherwise>
+			</choose>
+		</foreach>
+		ORDER BY id;
+		
+</select>
+
+<select id="findByCategoryAndProductName" resultType="jp.co.internous.origami.model.domain.MstProduct">
+
+	SELECT * FROM mst_product
+		WHERE category_id = #{category} AND
+		<foreach item="searchWord" collection="searchWord" open="(" close=")" separator=""  index="idx">
+			<choose>
+				<when test="idx == 0">
+					(product_name LIKE '%${searchWord}%') 
+				</when>
+				<otherwise>
+					OR (product_name LIKE '%${searchWord}%') 
+				</otherwise>
+			</choose>
+		</foreach>
+		ORDER BY id;
+		
+</select>
+
+</mapper>
